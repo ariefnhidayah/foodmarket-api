@@ -33,6 +33,7 @@ const Food = db.define('Food', {
 })
 
 const getFoods = async (params) => await Food.findAndCountAll({
+  order: [[params.order_by, parseInt(params.is_order_asc) === 1 ? 'asc' : 'desc']],
   offset: parseInt(params.offset),
   limit: parseInt(params.limit),
   where: {
