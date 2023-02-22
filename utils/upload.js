@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 require('dotenv').config()
-const { HOSTNAME } = process.env
+const { HOSTNAME_ENV } = process.env
 
 const uploadImage = (data, filename, additional_folder = '') => {
   const returnData = {
@@ -17,19 +17,19 @@ const uploadImage = (data, filename, additional_folder = '') => {
     let fullPath = '';
     let path = ''
     if (additional_folder != '') {
-      fullPath = `${HOSTNAME}images/${additional_folder}/${filename}`;
+      fullPath = `${HOSTNAME_ENV}images/${additional_folder}/${filename}`;
       path = `./public/images/${additional_folder}/${filename}`
     } else {
-      fullPath = `${HOSTNAME}images/${filename}`;
+      fullPath = `${HOSTNAME_ENV}images/${filename}`;
       path = `./public/images/${filename}`
     }
 
     if (fs.existsSync(path)) {
       if (additional_folder != '') {
-        fullPath = `${HOSTNAME}images/${additional_folder}/${Date.now()}-${filename}`;
+        fullPath = `${HOSTNAME_ENV}images/${additional_folder}/${Date.now()}-${filename}`;
         path = `./public/images/${additional_folder}/${Date.now()}-${filename}`
       } else {
-        fullPath = `${HOSTNAME}images/${Date.now()}-${filename}`;
+        fullPath = `${HOSTNAME_ENV}images/${Date.now()}-${filename}`;
         path = `./public/images/${Date.now()}-${filename}`
       }
     }
