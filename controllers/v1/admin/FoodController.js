@@ -125,7 +125,7 @@ class FoodController {
 
   async gets(req, res, next) {
     try {
-      let { page, limit, q } = req.query
+      let { page, limit, q, order_by, is_order_asc } = req.query
 
       if (!page) {
         page = 1
@@ -141,7 +141,15 @@ class FoodController {
         q = ''
       }
 
-      const foods = await getFoods({ offset, limit, q })
+      if (!order_by) {
+        order_by = 'name'
+      }
+
+      if (typeof is_order_asc === 'undefined') {
+        is_order_asc = 1
+      }
+
+      const foods = await getFoods({ offset, limit, q, order_by, is_order_asc, })
 
       return this._response.success(res, foods, "Get data successfully!")
 
