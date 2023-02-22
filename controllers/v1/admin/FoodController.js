@@ -4,6 +4,7 @@ const Validator = require('fastest-validator')
 const validator = new Validator()
 const path = require('path')
 const { uploadImage } = require('../../../utils/upload')
+const { getDateNow } = require('../../../utils/date')
 
 class FoodController {
   _foodModel
@@ -184,7 +185,7 @@ class FoodController {
       // await food.destroy()
       // food.date_deleted = Date.now()
       // await food.save()
-      await this._foodModel.update({ date_deleted: Date.now() }, { where: { id } })
+      await this._foodModel.update({ date_deleted: getDateNow() }, { where: { id } })
 
       return this._response.success(res, null, "Data berhasil dihapus!")
 
