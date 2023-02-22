@@ -162,7 +162,7 @@ class FoodController {
     try {
       const { id } = req.params
       const food = await this._foodModel.findByPk(id)
-      if(!food) {
+      if (!food) {
         return this._response.error(res, null, "Data tidak ditemukan!", 404)
       }
 
@@ -182,8 +182,9 @@ class FoodController {
       }
 
       // await food.destroy()
-      food.date_deleted = Date.now()
-      await food.save()
+      // food.date_deleted = Date.now()
+      // await food.save()
+      await this._foodModel.update({ date_deleted: Date.now() }, { where: { id } })
 
       return this._response.success(res, null, "Data berhasil dihapus!")
 
