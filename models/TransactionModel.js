@@ -15,6 +15,9 @@ const Transaction = db.define('Transaction', {
   food_id: DataTypes.INTEGER,
   quantity: DataTypes.INTEGER,
   total: DataTypes.DOUBLE,
+  shipping_cost: DataTypes.DOUBLE,
+  tax: DataTypes.DOUBLE,
+  grand_total: DataTypes.DOUBLE,
   status: {
     type: DataTypes.ENUM(['pending', 'paid', 'expired', 'finish']),
     defaultValue: 'pending'

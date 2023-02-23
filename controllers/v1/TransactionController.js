@@ -24,7 +24,8 @@ class TransactionController {
     try {
       const schema = {
         food_id: "number|empty:false",
-        quantity: "number|empty:false"
+        quantity: "number|empty:false",
+        shipping_cost: "number|empty:false"
       }
 
       const validate = validator.validate(req.body, schema)
@@ -32,7 +33,9 @@ class TransactionController {
         return this._response.error(res, validate, "Harap isi semua kolom!", 400)
       }
 
-      const { food_id, quantity } = req.body
+      const { food_id, quantity, shipping_cost } = req.body
+
+      const tax = 3000
 
       const food = await this._foodModel.findOne({ where: { id: food_id } })
       if (!food) {
@@ -47,6 +50,9 @@ class TransactionController {
         user_id: user.id,
         quantity: quantity,
         total: parseFloat(quantity) * parseFloat(food.price),
+        shipping_cost,
+        tax,
+        grand_total: (parseFloat(quantity) * parseFloat(food.price)) + shipping_cost + tax,
         status: 'pending',
         code
       })
