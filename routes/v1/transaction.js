@@ -29,4 +29,12 @@ router.put('/:id/upload-payment-proof', verify_token, async(req, res, next) => {
   }
 })
 
+router.put('/:id/cancel-transaction', verify_token, async(req, res, next) => {
+  try {
+    await new TransactionController().cancelTransaction(req, res, next)
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = router

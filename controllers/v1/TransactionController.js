@@ -30,7 +30,7 @@ class TransactionController {
 
       const validate = validator.validate(req.body, schema)
       if (validate.length > 0) {
-        return this._response.error(res, validate, "Harap isi semua kolom!", 400)
+        return this._response.error(res, validate, "Please fill in all fields!", 400)
       }
 
       const { food_id, quantity, shipping_cost } = req.body
@@ -39,7 +39,7 @@ class TransactionController {
 
       const food = await this._foodModel.findOne({ where: { id: food_id } })
       if (!food) {
-        return this._response.error(res, null, "Data tidak ditemukan!", 404);
+        return this._response.error(res, null, "Food not found!", 404);
       }
 
       const code = await generate_transaction_number()
@@ -89,7 +89,7 @@ class TransactionController {
       if (code) {
         const transaction = await getTransactionApp(code, user.id)
         if (!transaction) {
-          return this._response.error(res, null, "Transaksi tidak ditemukan!", 404);
+          return this._response.error(res, null, "Transaction not found!", 404);
         }
 
         return this._response.success(res, transaction)
@@ -134,15 +134,15 @@ class TransactionController {
       })
 
       if (!transaction) {
-        return this._response.error(res, null, "Transaksi tidak ditemukan!", 404);
+        return this._response.error(res, null, "Transaction not found!", 404);
       }
 
       if (transaction.status == 'paid') {
-        return this._response.error(res, null, "Transaksi sudah dibayar!", 400);
+        return this._response.error(res, null, "Transaction has been paid!", 400);
       } else if (transaction.status == 'expired') {
-        return this._response.error(res, null, "Transaksi sudah kadaluarsa!", 400);
+        return this._response.error(res, null, "Transaction has been expired!", 400);
       } else if (transaction.status == 'finish') {
-        return this._response.error(res, null, "Transaksi sudah selesai!", 400);
+        return this._response.error(res, null, "Transaction has been finished!", 400);
       }
 
       if (!req.files) {
@@ -168,7 +168,42 @@ class TransactionController {
         status: transaction.status
       })
 
-      return this._response.success(res, null, "Data berhasil disimpan!")
+      return this._response.success(res, null, "Data saved successfully!")
+
+    } catch (error) {
+      return this._response.error(res, error.toString(), "Something wen't wrong!");
+    }
+  }
+
+  async cancelTransaction(req, res, next) {
+    try {
+      const user = req.user
+      const { id } = req.params
+
+      const transaction = await this._transactionModel.findOne({
+        where: {
+          id,
+          user_id: user.id
+        }
+      })
+
+      if (!transaction) {
+        return this._response.error(res, null, "Transaction not found!", 404);
+      }
+
+      if (transaction.status == 'expired') {
+        return this._response.error(res, null, "Transaction has been expired!", 400);
+      }
+
+      transaction.status = 'expired'
+      await transaction.save()
+
+      await this._transactionHistoryModel.create({
+        transaction_id: transaction.id,
+        status: transaction.status
+      })
+
+      return this._response.success(res, null, "Data saved successfully!")
 
     } catch (error) {
       return this._response.error(res, error.toString(), "Something wen't wrong!");

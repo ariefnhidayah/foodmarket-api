@@ -56,7 +56,7 @@ class FoodController {
       const { id } = req.params
       const food = await this._foodModel.findByPk(id)
       if (!food) {
-        return this._response.error(res, null, "Data tidak ada!", 404);
+        return this._response.error(res, null, "Data not found!", 404);
       }
 
       return this._response.success(res, food)

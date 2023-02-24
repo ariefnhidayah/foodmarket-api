@@ -27,7 +27,7 @@ class UserController {
 
       const validate = validator.validate(req.body, schema)
       if (validate.length > 0) {
-        return this._response.error(res, validate, "Harap isi semua kolom!", 400)
+        return this._response.error(res, validate, "Please fill in all fields!", 400)
       }
 
       const { email, password } = req.body
@@ -39,12 +39,12 @@ class UserController {
       })
 
       if (!user) {
-        return this._response.error(res, null, "Email tidak terdaftar!", 404)
+        return this._response.error(res, null, "Unregistered e-mail!", 404)
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password)
       if (!isValidPassword) {
-        return this._response.error(res, null, "Password salah!", 400)
+        return this._response.error(res, null, "Password wrong!", 400)
       }
 
       const token = jwt.sign({ data: user }, JWT_SECRET, { expiresIn: JWT_ACCESS_TOKEN_EXPIRED })
@@ -52,7 +52,7 @@ class UserController {
         access_token: token,
         token_type: 'Bearer',
         data: user,
-      }, "Berhasil login!")
+      }, "Login successfully!")
 
     } catch (error) {
       return this._response.error(res, error, "Something wen't wrong!");
@@ -69,7 +69,7 @@ class UserController {
 
       const validate = validator.validate(req.body, schema)
       if (validate.length > 0) {
-        return this._response.error(res, validate, "Harap isi semua kolom!", 400)
+        return this._response.error(res, validate, "Please fill in all fields!", 400)
       }
 
       let { name, email, password, address, house_number, phone_number, city, role_id } = req.body
@@ -112,7 +112,7 @@ class UserController {
         access_token: token,
         token_type: 'Bearer',
         data: user,
-      }, "Berhasil masuk!")
+      }, "Login successfully!")
 
     } catch (error) {
       return this._response.error(res, error, "Something wen't wrong!");
@@ -179,7 +179,7 @@ class UserController {
     try {
       const user = req.user
       if (!req.files) {
-        return this._response.error(res, null, "Gambar harus diisi!", 400)
+        return this._response.error(res, null, "Image is required!", 400)
       }
 
       const image = req.files.image
@@ -199,7 +199,7 @@ class UserController {
         }
       })
 
-      return this._response.success(res, null, "Data berhasil disimpan!")
+      return this._response.success(res, null, "Data saved successfully!")
 
     } catch (error) {
       return this._response.error(res, error.toString(), "Something wen't wrong!");
