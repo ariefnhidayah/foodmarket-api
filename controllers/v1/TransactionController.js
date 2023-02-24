@@ -103,6 +103,7 @@ class TransactionController {
         }
 
         let offset = (page - 1) * limit
+        status = status.split('|')
 
         const transactions = await getTransactions({
           offset,
