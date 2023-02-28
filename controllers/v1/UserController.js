@@ -168,7 +168,13 @@ class UserController {
         }
       })
 
-      return this._response.success(res, user)
+      const token = jwt.sign({ data: user }, JWT_SECRET, { expiresIn: JWT_ACCESS_TOKEN_EXPIRED })
+
+      return this._response.success(res, {
+        access_token: token,
+        token_type: 'Bearer',
+        data: user,
+      }, "Data saved successfully!")
 
     } catch (error) {
       return this._response.error(res, error, "Something wen't wrong!");
@@ -199,7 +205,19 @@ class UserController {
         }
       })
 
-      return this._response.success(res, null, "Data saved successfully!")
+      const newUser = await this._userModel.findOne({
+        where: {
+          id: user.id,
+        }
+      })
+
+      const token = jwt.sign({ data: newUser }, JWT_SECRET, { expiresIn: JWT_ACCESS_TOKEN_EXPIRED })
+
+      return this._response.success(res, {
+        access_token: token,
+        token_type: 'Bearer',
+        data: newUser,
+      }, "Data saved successfully!")
 
     } catch (error) {
       return this._response.error(res, error.toString(), "Something wen't wrong!");
